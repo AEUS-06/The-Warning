@@ -1,0 +1,19 @@
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild/
+[Bb]uilds/
+.obj/
+*.csproj
+*.unityproj
+*.sln
+*.user
+.vscode/
+.idea/
+*.log
+
+# Git ignora Packages entero, pero mantenemos manifest.json (importante)
+Packages/
+!Packages/manifest.json
+
+# Mantenemos las configuraciones de proyecto
+!ProjectSettings/
