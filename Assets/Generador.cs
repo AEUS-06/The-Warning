@@ -3,181 +3,378 @@ using UnityEngine;
 
 public class GeneradorMazmorra : MonoBehaviour
 {
-    [Header("Prefabs")]
+    [Header("Prefabs - Suelo y Paredes")]
     public GameObject sueloPrefab;
+
+    [Tooltip("Pared superior: principal (visible encima)")]
     public GameObject paredArribaPrefab;
-    public GameObject paredArriba2Prefab; // Nuevo prefab para variar la pared de arriba
+    [Tooltip("Pared superior: secundario (visible entre suelo y principal)")]
+    public GameObject paredArriba2Prefab;
+
     public GameObject paredAbajoPrefab;
     public GameObject paredIzquierdaPrefab;
     public GameObject paredDerechaPrefab;
 
+    [Header("Prefabs - Esquinas (superiores con secundario debajo)")]
     public GameObject esquinaSupIzqPrefab;
+    public GameObject esquinaSupIzq2Prefab;
     public GameObject esquinaSupDerPrefab;
+    public GameObject esquinaSupDer2Prefab;
+
+    [Header("Esquinas inferiores (simples)")]
     public GameObject esquinaInfIzqPrefab;
     public GameObject esquinaInfDerPrefab;
 
-    [Header("Tamaño Mazmorra")]
-    public int ancho = 20;
-    public int alto = 20;
+    [Header("Coberturas")]
+    public GameObject coberturaPrefab;
+    [Range(0, 4)] public int coberturasMaxPorSala = 3;
 
-    [Header("Control de Generación")]
-    public int cantidadSalas = 5;
-    public int tamSalaMin = 3;
-    public int tamSalaMax = 6;
+    [Header("Tamaño mapa")]
+    public int ancho = 60;
+    public int alto = 60;
 
+    [Header("Salas (rectangulares)")]
+    public int cantidadSalas = 6;
+    public int tamSalaMin = 5;
+    public int tamSalaMax = 10;
+    [Tooltip("Margen entre salas para que no se encimen")]
+    public int separacionSalas = 1;
+
+    [Header("Offsets Y para secundarios (opcional)")]
+    public float yOffsetParedArriba2 = -0.20f;
+    public float yOffsetEsquinaArriba2 = -0.20f;
+
+    [Header("Orden de dibujo (SpriteRenderer.sortingOrder)")]
+    public int orderSuelo = 0;
+    public int orderSecundario = 1; // prefab2
+    public int orderPrincipal = 2;  // prefab principal
+    public int orderCobertura = 3;
+
+    // ---- Estado interno ----
     private int[,] mapa; // 0 vacío, 1 suelo
-    private List<RectInt> salas = new List<RectInt>();
+    private readonly List<RectInt> salas = new List<RectInt>();
+    private readonly HashSet<Vector2Int> celdasSuelo = new HashSet<Vector2Int>();
+
+    // Sets para bordes (deduplicados)
+    private readonly HashSet<Vector2Int> bordesArriba = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesAbajo  = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesIzq    = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesDer    = new HashSet<Vector2Int>();
+
+    private readonly HashSet<Vector2Int> esquSupIzq = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquSupDer = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquInfIzq = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquInfDer = new HashSet<Vector2Int>();
+
+    // Control para evitar duplicados de coberturas
+    private readonly HashSet<Vector2Int> celdasCobertura = new HashSet<Vector2Int>();
+
+    // Flags por celda para controlar qué ya existe (evitar amontonamiento)
+    [System.Flags]
+    enum CeldaEstado { Ninguno = 0, Suelo = 1, Secundario = 2, Principal = 4, Cobertura = 8 }
+    private readonly Dictionary<Vector2Int, CeldaEstado> estados = new Dictionary<Vector2Int, CeldaEstado>();
 
     void Start()
     {
         GenerarMazmorra();
     }
 
-    void GenerarMazmorra()
+    public void GenerarMazmorra()
     {
+        // reset
         mapa = new int[ancho, alto];
         salas.Clear();
+        celdasSuelo.Clear();
+        bordesArriba.Clear(); bordesAbajo.Clear(); bordesIzq.Clear(); bordesDer.Clear();
+        esquSupIzq.Clear(); esquSupDer.Clear(); esquInfIzq.Clear(); esquInfDer.Clear();
+        celdasCobertura.Clear();
+        estados.Clear();
 
-        // Generar salas
-        for (int i = 0; i < cantidadSalas; i++)
+        LimpiarHijos();
+
+        GenerarSalasRectangularesConPadding();
+        ConectarSalasConMST();
+        PlanificarBordes();
+        InstanciarSuelo();
+        InstanciarBordesSecundarios(); // prefab2 (se colocan visualmente entre suelo y principal)
+        InstanciarBordesPrincipales(); // prefabs principales (encima)
+        GenerarCoberturasEnSalas();
+    }
+
+    // ---------------- Salas ----------------
+    void GenerarSalasRectangularesConPadding()
+    {
+        int intentos = 0;
+        while (salas.Count < cantidadSalas && intentos < cantidadSalas * 40)
         {
+            intentos++;
             int w = Random.Range(tamSalaMin, tamSalaMax + 1);
             int h = Random.Range(tamSalaMin, tamSalaMax + 1);
-            int x = Random.Range(1, ancho - w - 1);
-            int y = Random.Range(1, alto - h - 1);
 
-            RectInt sala = new RectInt(x, y, w, h);
+            int maxXExclusive = Mathf.Max(2, ancho - w);
+            int maxYExclusive = Mathf.Max(2, alto  - h);
+            if (maxXExclusive <= 1 || maxYExclusive <= 1) break;
 
-            // Evitar solapamiento
+            int x = Random.Range(1, maxXExclusive);
+            int y = Random.Range(1, maxYExclusive);
+
+            var nueva = new RectInt(x, y, w, h);
+
             bool solapa = false;
-            foreach (RectInt s in salas)
+            foreach (var s in salas)
             {
-                if (s.Overlaps(sala))
-                {
-                    solapa = true;
-                    break;
-                }
+                var sPad = new RectInt(s.xMin - separacionSalas, s.yMin - separacionSalas, s.width + separacionSalas * 2, s.height + separacionSalas * 2);
+                if (sPad.Overlaps(nueva)) { solapa = true; break; }
             }
             if (solapa) continue;
 
-            salas.Add(sala);
+            salas.Add(nueva);
 
-            for (int ix = sala.xMin; ix < sala.xMax; ix++)
+            // Rellenar suelo (NO marcamos estados aquí, lo hacemos solo al instanciar)
+            for (int ix = nueva.xMin; ix < nueva.xMax; ix++)
+                for (int iy = nueva.yMin; iy < nueva.yMax; iy++)
+                    if (Dentro(ix, iy))
+                    {
+                        mapa[ix, iy] = 1;
+                        celdasSuelo.Add(new Vector2Int(ix, iy));
+                    }
+        }
+    }
+
+    // ---------------- Pasillos (MST + L) ----------------
+    void ConectarSalasConMST()
+    {
+        if (salas.Count <= 1) return;
+        var conectadas = new HashSet<int> { 0 };
+
+        while (conectadas.Count < salas.Count)
+        {
+            int mejorA = -1, mejorB = -1, mejorD = int.MaxValue;
+            foreach (int i in conectadas)
             {
-                for (int iy = sala.yMin; iy < sala.yMax; iy++)
+                for (int j = 0; j < salas.Count; j++)
                 {
-                    mapa[ix, iy] = 1; // suelo
+                    if (conectadas.Contains(j)) continue;
+                    int d = DistManhattan(Centro(salas[i]), Centro(salas[j]));
+                    if (d < mejorD) { mejorD = d; mejorA = i; mejorB = j; }
                 }
             }
-        }
-
-        // Conectar salas con pasillos más cortos
-        for (int i = 0; i < salas.Count - 1; i++)
-        {
-            Vector2Int centroA = new Vector2Int(
-                salas[i].xMin + salas[i].width / 2,
-                salas[i].yMin + salas[i].height / 2
-            );
-            Vector2Int centroB = new Vector2Int(
-                salas[i + 1].xMin + salas[i + 1].width / 2,
-                salas[i + 1].yMin + salas[i + 1].height / 2
-            );
-
-            CrearPasillo(centroA, centroB);
-        }
-
-        DibujarMapa();
-    }
-
-    void CrearPasillo(Vector2Int a, Vector2Int b)
-    {
-        // Pasillos en L
-        if (Random.value < 0.5f)
-        {
-            CrearLineaHorizontal(a.x, b.x, a.y);
-            CrearLineaVertical(a.y, b.y, b.x);
-        }
-        else
-        {
-            CrearLineaVertical(a.y, b.y, a.x);
-            CrearLineaHorizontal(a.x, b.x, b.y);
+            if (mejorA == -1) break;
+            CrearPasilloEnL(Centro(salas[mejorA]), Centro(salas[mejorB]));
+            conectadas.Add(mejorB);
         }
     }
 
-    void CrearLineaHorizontal(int x1, int x2, int y)
+    Vector2Int Centro(RectInt r) => new Vector2Int(r.xMin + r.width / 2, r.yMin + r.height / 2);
+    int DistManhattan(Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+
+    void CrearPasilloEnL(Vector2Int a, Vector2Int b)
     {
-        for (int x = Mathf.Min(x1, x2); x <= Mathf.Max(x1, x2); x++)
+        if (Random.value < 0.5f) { CrearLineaH(a.x, b.x, a.y); CrearLineaV(a.y, b.y, b.x); }
+        else { CrearLineaV(a.y, b.y, a.x); CrearLineaH(a.x, b.x, b.y); }
+    }
+
+    void CrearLineaH(int x1, int x2, int y)
+    {
+        int min = Mathf.Min(x1, x2), max = Mathf.Max(x1, x2);
+        for (int x = min; x <= max; x++)
+            if (Dentro(x, y)) { mapa[x, y] = 1; var p = new Vector2Int(x, y); celdasSuelo.Add(p); }
+    }
+
+    void CrearLineaV(int y1, int y2, int x)
+    {
+        int min = Mathf.Min(y1, y2), max = Mathf.Max(y1, y2);
+        for (int y = min; y <= max; y++)
+            if (Dentro(x, y)) { mapa[x, y] = 1; var p = new Vector2Int(x, y); celdasSuelo.Add(p); }
+    }
+
+    // ---------------- Planificar bordes (una celda = una decisión) ----------------
+    void PlanificarBordes()
+    {
+        foreach (var s in celdasSuelo)
         {
-            if (x > 0 && x < ancho && y > 0 && y < alto)
-                mapa[x, y] = 1;
+            int x = s.x, y = s.y;
+
+            if (EsVacio(x, y + 1)) bordesArriba.Add(new Vector2Int(x, y + 1));
+            if (EsVacio(x, y - 1)) bordesAbajo.Add(new Vector2Int(x, y - 1));
+            if (EsVacio(x - 1, y)) bordesIzq.Add(new Vector2Int(x - 1, y));
+            if (EsVacio(x + 1, y)) bordesDer.Add(new Vector2Int(x + 1, y));
+
+            if (EsVacio(x, y + 1) && EsVacio(x - 1, y) && EsVacio(x - 1, y + 1)) esquSupIzq.Add(new Vector2Int(x - 1, y + 1));
+            if (EsVacio(x, y + 1) && EsVacio(x + 1, y) && EsVacio(x + 1, y + 1)) esquSupDer.Add(new Vector2Int(x + 1, y + 1));
+            if (EsVacio(x, y - 1) && EsVacio(x - 1, y) && EsVacio(x - 1, y - 1)) esquInfIzq.Add(new Vector2Int(x - 1, y - 1));
+            if (EsVacio(x, y - 1) && EsVacio(x + 1, y) && EsVacio(x + 1, y - 1)) esquInfDer.Add(new Vector2Int(x + 1, y - 1));
         }
     }
 
-    void CrearLineaVertical(int y1, int y2, int x)
+    // ---------------- Instanciación (orden y evitar duplicados) ----------------
+    void InstanciarSuelo()
     {
-        for (int y = Mathf.Min(y1, y2); y <= Mathf.Max(y1, y2); y++)
-        {
-            if (x > 0 && x < ancho && y > 0 && y < alto)
-                mapa[x, y] = 1;
-        }
+        foreach (var p in celdasSuelo)
+            InstanciarConOrdenSiNoExiste(sueloPrefab, p, orderSuelo, CeldaEstado.Suelo);
     }
 
-    void DibujarMapa()
+    void InstanciarBordesSecundarios()
     {
-        foreach (Transform hijo in transform)
-        {
-            Destroy(hijo.gameObject);
-        }
+        if (paredArriba2Prefab != null)
+            foreach (var p in bordesArriba)
+                InstanciarConOrdenSiNoExiste(paredArriba2Prefab, p, orderSecundario, CeldaEstado.Secundario, yOffsetParedArriba2);
 
-        for (int x = 0; x < ancho; x++)
+        if (esquinaSupIzq2Prefab != null)
+            foreach (var p in esquSupIzq)
+                InstanciarConOrdenSiNoExiste(esquinaSupIzq2Prefab, p, orderSecundario, CeldaEstado.Secundario, yOffsetEsquinaArriba2);
+
+        if (esquinaSupDer2Prefab != null)
+            foreach (var p in esquSupDer)
+                InstanciarConOrdenSiNoExiste(esquinaSupDer2Prefab, p, orderSecundario, CeldaEstado.Secundario, yOffsetEsquinaArriba2);
+    }
+
+    void InstanciarBordesPrincipales()
+    {
+        if (esquinaSupIzqPrefab != null)
+            foreach (var p in esquSupIzq)
+                InstanciarConOrdenSiNoExiste(esquinaSupIzqPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaSupDerPrefab != null)
+            foreach (var p in esquSupDer)
+                InstanciarConOrdenSiNoExiste(esquinaSupDerPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (paredArribaPrefab != null)
+            foreach (var p in bordesArriba)
+                InstanciarConOrdenSiNoExiste(paredArribaPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (paredAbajoPrefab != null)
+            foreach (var p in bordesAbajo)
+                InstanciarConOrdenSiNoExiste(paredAbajoPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (paredIzquierdaPrefab != null)
+            foreach (var p in bordesIzq)
+                InstanciarConOrdenSiNoExiste(paredIzquierdaPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (paredDerechaPrefab != null)
+            foreach (var p in bordesDer)
+                InstanciarConOrdenSiNoExiste(paredDerechaPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaInfIzqPrefab != null)
+            foreach (var p in esquInfIzq)
+                InstanciarConOrdenSiNoExiste(esquinaInfIzqPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaInfDerPrefab != null)
+            foreach (var p in esquInfDer)
+                InstanciarConOrdenSiNoExiste(esquinaInfDerPrefab, p, orderPrincipal, CeldaEstado.Principal);
+    }
+
+    // ---------------- Coberturas ----------------
+    void GenerarCoberturasEnSalas()
+    {
+        if (coberturaPrefab == null || coberturasMaxPorSala <= 0) return;
+
+        foreach (var sala in salas)
         {
-            for (int y = 0; y < alto; y++)
+            int faltan = Random.Range(0, coberturasMaxPorSala + 1);
+            int intentos = 0;
+            while (faltan > 0 && intentos < 60)
             {
-                if (mapa[x, y] == 1)
+                intentos++;
+                int cx = Random.Range(sala.xMin + 2, sala.xMax - 2);
+                int cy = Random.Range(sala.yMin + 2, sala.yMax - 2);
+                var basePos = new Vector2Int(cx, cy);
+
+                if (!celdasSuelo.Contains(basePos)) continue;
+
+                int patron = Random.Range(0, 4);
+                int rot = Random.Range(0, 4);
+                var celdas = ObtenerCeldasCobertura(basePos, patron, rot);
+
+                bool valido = true;
+                foreach (var c in celdas)
                 {
-                    Instantiate(sueloPrefab, new Vector3(x, y, 0), Quaternion.identity, transform);
-
-                    // Arriba
-                    if (y + 1 < alto && mapa[x, y + 1] == 0)
-                    {
-                        GameObject paredPrefab = (Random.value < 0.5f) ? paredArribaPrefab : paredArriba2Prefab;
-                        Instantiate(paredPrefab, new Vector3(x, y + 1, 0), Quaternion.identity, transform);
-                    }
-                    // Abajo
-                    if (y - 1 >= 0 && mapa[x, y - 1] == 0)
-                    {
-                        Instantiate(paredAbajoPrefab, new Vector3(x, y - 1, 0), Quaternion.identity, transform);
-                    }
-                    // Izquierda
-                    if (x - 1 >= 0 && mapa[x - 1, y] == 0)
-                    {
-                        Instantiate(paredIzquierdaPrefab, new Vector3(x - 1, y, 0), Quaternion.identity, transform);
-                    }
-                    // Derecha
-                    if (x + 1 < ancho && mapa[x + 1, y] == 0)
-                    {
-                        Instantiate(paredDerechaPrefab, new Vector3(x + 1, y, 0), Quaternion.identity, transform);
-                    }
-
-                    // Esquinas
-                    if (mapa[x, y + 1] == 0 && mapa[x - 1, y] == 0) // sup izq
-                    {
-                        Instantiate(esquinaSupIzqPrefab, new Vector3(x - 1, y + 1, 0), Quaternion.identity, transform);
-                    }
-                    if (mapa[x, y + 1] == 0 && mapa[x + 1, y] == 0) // sup der
-                    {
-                        Instantiate(esquinaSupDerPrefab, new Vector3(x + 1, y + 1, 0), Quaternion.identity, transform);
-                    }
-                    if (mapa[x, y - 1] == 0 && mapa[x - 1, y] == 0) // inf izq
-                    {
-                        Instantiate(esquinaInfIzqPrefab, new Vector3(x - 1, y - 1, 0), Quaternion.identity, transform);
-                    }
-                    if (mapa[x, y - 1] == 0 && mapa[x + 1, y] == 0) // inf der
-                    {
-                        Instantiate(esquinaInfDerPrefab, new Vector3(x + 1, y - 1, 0), Quaternion.identity, transform);
-                    }
+                    if (!Dentro(c.x, c.y) || !celdasSuelo.Contains(c) || celdasCobertura.Contains(c)) { valido = false; break; }
+                    if (EsCeldaBordePrincipal(c)) { valido = false; break; }
                 }
+                if (!valido) continue;
+
+                foreach (var c in celdas)
+                {
+                    InstanciarConOrdenSiNoExiste(coberturaPrefab, c, orderCobertura, CeldaEstado.Cobertura);
+                    celdasCobertura.Add(c);
+                }
+                faltan--;
             }
         }
     }
-}  
+
+    List<Vector2Int> ObtenerCeldasCobertura(Vector2Int basePos, int patron, int rot)
+    {
+        var lista = new List<Vector2Int> { basePos };
+        switch (patron)
+        {
+            case 1:
+                lista.Add(basePos + Vector2Int.left);
+                lista.Add(basePos + Vector2Int.right);
+                break;
+            case 2:
+                lista.Add(basePos + Vector2Int.down);
+                lista.Add(basePos + Vector2Int.up);
+                break;
+            case 3:
+                lista.Add(basePos + Vector2Int.right);
+                lista.Add(basePos + Vector2Int.up);
+                break;
+        }
+
+        if (rot % 4 != 0)
+        {
+            var rotadas = new List<Vector2Int>();
+            foreach (var p in lista)
+            {
+                Vector2Int d = p - basePos;
+                Vector2Int r = d;
+                for (int i = 0; i < (rot % 4); i++) r = new Vector2Int(-r.y, r.x);
+                rotadas.Add(basePos + r);
+            }
+            lista = rotadas;
+        }
+
+        return lista;
+    }
+
+    // Comprueba si una celda coincide con cualquier borde principal (pared principal o esquina principal)
+    bool EsCeldaBordePrincipal(Vector2Int c)
+    {
+        return bordesArriba.Contains(c) || bordesAbajo.Contains(c) || bordesIzq.Contains(c) || bordesDer.Contains(c)
+            || esquSupIzq.Contains(c) || esquSupDer.Contains(c) || esquInfIzq.Contains(c) || esquInfDer.Contains(c);
+    }
+
+    // ---------------- Util / Instanciación segura ----------------
+    void InstanciarConOrdenSiNoExiste(GameObject prefab, Vector2Int celda, int sortingOrder, CeldaEstado marca, float yOffset = 0f)
+    {
+        if (prefab == null) return;
+
+        if (!estados.ContainsKey(celda)) estados[celda] = CeldaEstado.Ninguno;
+        var actual = estados[celda];
+
+        // si ya hay la misma marca, no duplicar
+        if ((actual & marca) != 0) return;
+
+        // marcar la celda antes de instanciar para evitar reentradas
+        estados[celda] = actual | marca;
+
+        var obj = Instantiate(prefab, new Vector3(celda.x, celda.y + yOffset, 0f), Quaternion.identity, transform);
+        var sr = obj.GetComponent<SpriteRenderer>();
+        if (sr) sr.sortingOrder = sortingOrder;
+    }
+
+    bool Dentro(int x, int y) => x >= 0 && y >= 0 && x < ancho && y < alto;
+    bool EsVacio(int x, int y) => Dentro(x, y) && mapa[x, y] == 0;
+
+    void LimpiarHijos()
+    {
+        // destroy immediate in editor, normal destroy in play mode
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            var go = transform.GetChild(i).gameObject;
+            if (Application.isPlaying) Destroy(go); else DestroyImmediate(go);
+        }
+    }
+}
