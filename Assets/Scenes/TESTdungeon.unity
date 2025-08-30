@@ -292,14 +292,29 @@ MonoBehaviour:
   paredIzquierdaPrefab: {fileID: 2006677180802345287, guid: 746bd99be8fd7024f95802fb53c12c73, type: 3}
   paredDerechaPrefab: {fileID: 840704439631523075, guid: 8e6d4a7b97986e249aa048d3afcb327e, type: 3}
   esquinaSupIzqPrefab: {fileID: 5264786158138410627, guid: fe6d587ff5e9885408532f9acc369ba6, type: 3}
+  esquinaSupIzq2Prefab: {fileID: 7985155325934820433, guid: 10262c8a69e16294dad548f31b16469f, type: 3}
   esquinaSupDerPrefab: {fileID: 1449133668208770498, guid: ead9ec1aee3497b43af1e425ed03ccdc, type: 3}
+  esquinaSupDer2Prefab: {fileID: 6905071804801653410, guid: bf771bc8169cb4f4d8192eb1f00ad0cd, type: 3}
   esquinaInfIzqPrefab: {fileID: 2497535835983823321, guid: 78d82a4c059740a46a226b2834314157, type: 3}
   esquinaInfDerPrefab: {fileID: 8622189231440782791, guid: a3442ce2a5db9e747b1e986aaeb17301, type: 3}
-  ancho: 50
-  alto: 50
+  esquinaIntArribaIzqPrefab: {fileID: 5094926446657710739, guid: 7f9884f937dbb6d4885901034289838f, type: 3}
+  esquinaIntArribaDerPrefab: {fileID: 2490870867680849657, guid: ec9a16a7d3e2eaa4d823bfdc19291d13, type: 3}
+  esquinaIntAbajoIzqPrefab: {fileID: 7084152945630959489, guid: 4c9f7cf6bd7a5f0479e1e4614d1975e4, type: 3}
+  esquinaIntAbajoDerPrefab: {fileID: 2965524337403844475, guid: 7be0581ec286f9642ac2ef27b5811300, type: 3}
+  coberturaPrefab: {fileID: 2551480130435545722, guid: fa6679eac7e9c5f45a04bc37489c5ef0, type: 3}
+  coberturasMaxPorSala: 3
+  ancho: 80
+  alto: 80
   cantidadSalas: 8
-  tamSalaMin: 4
-  tamSalaMax: 8
+  tamSalaMin: 7
+  tamSalaMax: 10
+  separacionSalas: 1
+  yOffsetParedArriba2: -1.1
+  yOffsetEsquinaArriba2: -1.1
+  orderSuelo: 0
+  orderSecundario: 2
+  orderPrincipal: 1
+  orderCobertura: 3
 --- !u!4 &635148222
 Transform:
   m_ObjectHideFlags: 0
@@ -309,7 +324,7 @@ Transform:
   m_GameObject: {fileID: 635148220}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 52.28712, y: 45.841763, z: -0.5522515}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

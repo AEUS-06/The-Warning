@@ -25,6 +25,12 @@ public class GeneradorMazmorra : MonoBehaviour
     public GameObject esquinaInfIzqPrefab;
     public GameObject esquinaInfDerPrefab;
 
+    [Header("Esquinas internas")]
+    public GameObject esquinaIntArribaIzqPrefab;
+    public GameObject esquinaIntArribaDerPrefab;
+    public GameObject esquinaIntAbajoIzqPrefab;
+    public GameObject esquinaIntAbajoDerPrefab;
+
     [Header("Coberturas")]
     public GameObject coberturaPrefab;
     [Range(0, 4)] public int coberturasMaxPorSala = 3;
@@ -50,26 +56,31 @@ public class GeneradorMazmorra : MonoBehaviour
     public int orderPrincipal = 2;  // prefab principal
     public int orderCobertura = 3;
 
-    // ---- Estado interno ----
+    //mapa interno
     private int[,] mapa; // 0 vacío, 1 suelo
     private readonly List<RectInt> salas = new List<RectInt>();
     private readonly HashSet<Vector2Int> celdasSuelo = new HashSet<Vector2Int>();
 
-    // Sets para bordes (deduplicados)
+    //paredes y esquinas 
     private readonly HashSet<Vector2Int> bordesArriba = new HashSet<Vector2Int>();
-    private readonly HashSet<Vector2Int> bordesAbajo  = new HashSet<Vector2Int>();
-    private readonly HashSet<Vector2Int> bordesIzq    = new HashSet<Vector2Int>();
-    private readonly HashSet<Vector2Int> bordesDer    = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesAbajo = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesIzq = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> bordesDer = new HashSet<Vector2Int>();
 
     private readonly HashSet<Vector2Int> esquSupIzq = new HashSet<Vector2Int>();
     private readonly HashSet<Vector2Int> esquSupDer = new HashSet<Vector2Int>();
     private readonly HashSet<Vector2Int> esquInfIzq = new HashSet<Vector2Int>();
     private readonly HashSet<Vector2Int> esquInfDer = new HashSet<Vector2Int>();
 
-    // Control para evitar duplicados de coberturas
+    private readonly HashSet<Vector2Int> esquIntArribaIzq = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquIntArribaDer = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquIntAbajoIzq = new HashSet<Vector2Int>();
+    private readonly HashSet<Vector2Int> esquIntAbajoDer = new HashSet<Vector2Int>();
+
+    //celdas ya ocupadas por coberturas
     private readonly HashSet<Vector2Int> celdasCobertura = new HashSet<Vector2Int>();
 
-    // Flags por celda para controlar qué ya existe (evitar amontonamiento)
+    //evitar que se amontonen los prefabs
     [System.Flags]
     enum CeldaEstado { Ninguno = 0, Suelo = 1, Secundario = 2, Principal = 4, Cobertura = 8 }
     private readonly Dictionary<Vector2Int, CeldaEstado> estados = new Dictionary<Vector2Int, CeldaEstado>();
@@ -81,12 +92,13 @@ public class GeneradorMazmorra : MonoBehaviour
 
     public void GenerarMazmorra()
     {
-        // reset
+        //reinicia todo
         mapa = new int[ancho, alto];
         salas.Clear();
         celdasSuelo.Clear();
         bordesArriba.Clear(); bordesAbajo.Clear(); bordesIzq.Clear(); bordesDer.Clear();
         esquSupIzq.Clear(); esquSupDer.Clear(); esquInfIzq.Clear(); esquInfDer.Clear();
+        esquIntArribaIzq.Clear(); esquIntArribaDer.Clear(); esquIntAbajoIzq.Clear(); esquIntAbajoDer.Clear();
         celdasCobertura.Clear();
         estados.Clear();
 
@@ -96,12 +108,13 @@ public class GeneradorMazmorra : MonoBehaviour
         ConectarSalasConMST();
         PlanificarBordes();
         InstanciarSuelo();
-        InstanciarBordesSecundarios(); // prefab2 (se colocan visualmente entre suelo y principal)
-        InstanciarBordesPrincipales(); // prefabs principales (encima)
+        InstanciarBordesSecundarios();
+        InstanciarBordesPrincipales();
+        InstanciarEsquinasInternas();
         GenerarCoberturasEnSalas();
     }
 
-    // ---------------- Salas ----------------
+    //creacion de las salas
     void GenerarSalasRectangularesConPadding()
     {
         int intentos = 0;
@@ -112,7 +125,7 @@ public class GeneradorMazmorra : MonoBehaviour
             int h = Random.Range(tamSalaMin, tamSalaMax + 1);
 
             int maxXExclusive = Mathf.Max(2, ancho - w);
-            int maxYExclusive = Mathf.Max(2, alto  - h);
+            int maxYExclusive = Mathf.Max(2, alto - h);
             if (maxXExclusive <= 1 || maxYExclusive <= 1) break;
 
             int x = Random.Range(1, maxXExclusive);
@@ -130,7 +143,7 @@ public class GeneradorMazmorra : MonoBehaviour
 
             salas.Add(nueva);
 
-            // Rellenar suelo (NO marcamos estados aquí, lo hacemos solo al instanciar)
+            // Rellenar suelo
             for (int ix = nueva.xMin; ix < nueva.xMax; ix++)
                 for (int iy = nueva.yMin; iy < nueva.yMax; iy++)
                     if (Dentro(ix, iy))
@@ -141,7 +154,7 @@ public class GeneradorMazmorra : MonoBehaviour
         }
     }
 
-    // ---------------- Pasillos (MST + L) ----------------
+    //control de los pasillos
     void ConectarSalasConMST()
     {
         if (salas.Count <= 1) return;
@@ -178,17 +191,17 @@ public class GeneradorMazmorra : MonoBehaviour
     {
         int min = Mathf.Min(x1, x2), max = Mathf.Max(x1, x2);
         for (int x = min; x <= max; x++)
-            if (Dentro(x, y)) { mapa[x, y] = 1; var p = new Vector2Int(x, y); celdasSuelo.Add(p); }
+            if (Dentro(x, y)) { mapa[x, y] = 1; celdasSuelo.Add(new Vector2Int(x, y)); }
     }
 
     void CrearLineaV(int y1, int y2, int x)
     {
         int min = Mathf.Min(y1, y2), max = Mathf.Max(y1, y2);
         for (int y = min; y <= max; y++)
-            if (Dentro(x, y)) { mapa[x, y] = 1; var p = new Vector2Int(x, y); celdasSuelo.Add(p); }
+            if (Dentro(x, y)) { mapa[x, y] = 1; celdasSuelo.Add(new Vector2Int(x, y)); }
     }
 
-    // ---------------- Planificar bordes (una celda = una decisión) ----------------
+    //creacion de las paredes y esquinas
     void PlanificarBordes()
     {
         foreach (var s in celdasSuelo)
@@ -200,14 +213,25 @@ public class GeneradorMazmorra : MonoBehaviour
             if (EsVacio(x - 1, y)) bordesIzq.Add(new Vector2Int(x - 1, y));
             if (EsVacio(x + 1, y)) bordesDer.Add(new Vector2Int(x + 1, y));
 
+            //esquinas principales externas
             if (EsVacio(x, y + 1) && EsVacio(x - 1, y) && EsVacio(x - 1, y + 1)) esquSupIzq.Add(new Vector2Int(x - 1, y + 1));
             if (EsVacio(x, y + 1) && EsVacio(x + 1, y) && EsVacio(x + 1, y + 1)) esquSupDer.Add(new Vector2Int(x + 1, y + 1));
             if (EsVacio(x, y - 1) && EsVacio(x - 1, y) && EsVacio(x - 1, y - 1)) esquInfIzq.Add(new Vector2Int(x - 1, y - 1));
             if (EsVacio(x, y - 1) && EsVacio(x + 1, y) && EsVacio(x + 1, y - 1)) esquInfDer.Add(new Vector2Int(x + 1, y - 1));
+
+            //esquinas internas
+            if (!EsVacio(x - 1, y) && !EsVacio(x, y + 1) && EsVacio(x - 1, y + 1))
+                esquIntArribaIzq.Add(new Vector2Int(x - 1, y + 1));
+            if (!EsVacio(x + 1, y) && !EsVacio(x, y + 1) && EsVacio(x + 1, y + 1))
+                esquIntArribaDer.Add(new Vector2Int(x + 1, y + 1));
+            if (!EsVacio(x - 1, y) && !EsVacio(x, y - 1) && EsVacio(x - 1, y - 1))
+                esquIntAbajoIzq.Add(new Vector2Int(x - 1, y - 1));
+            if (!EsVacio(x + 1, y) && !EsVacio(x, y - 1) && EsVacio(x + 1, y - 1))
+                esquIntAbajoDer.Add(new Vector2Int(x + 1, y - 1));
         }
     }
 
-    // ---------------- Instanciación (orden y evitar duplicados) ----------------
+    //instanciar prefabs
     void InstanciarSuelo()
     {
         foreach (var p in celdasSuelo)
@@ -264,7 +288,26 @@ public class GeneradorMazmorra : MonoBehaviour
                 InstanciarConOrdenSiNoExiste(esquinaInfDerPrefab, p, orderPrincipal, CeldaEstado.Principal);
     }
 
-    // ---------------- Coberturas ----------------
+    void InstanciarEsquinasInternas()
+    {
+        if (esquinaIntArribaIzqPrefab != null)
+            foreach (var p in esquIntArribaIzq)
+                InstanciarConOrdenSiNoExiste(esquinaIntArribaIzqPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaIntArribaDerPrefab != null)
+            foreach (var p in esquIntArribaDer)
+                InstanciarConOrdenSiNoExiste(esquinaIntArribaDerPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaIntAbajoIzqPrefab != null)
+            foreach (var p in esquIntAbajoIzq)
+                InstanciarConOrdenSiNoExiste(esquinaIntAbajoIzqPrefab, p, orderPrincipal, CeldaEstado.Principal);
+
+        if (esquinaIntAbajoDerPrefab != null)
+            foreach (var p in esquIntAbajoDer)
+                InstanciarConOrdenSiNoExiste(esquinaIntAbajoDerPrefab, p, orderPrincipal, CeldaEstado.Principal);
+    }
+
+    //creacion de coberturas
     void GenerarCoberturasEnSalas()
     {
         if (coberturaPrefab == null || coberturasMaxPorSala <= 0) return;
@@ -339,14 +382,13 @@ public class GeneradorMazmorra : MonoBehaviour
         return lista;
     }
 
-    // Comprueba si una celda coincide con cualquier borde principal (pared principal o esquina principal)
     bool EsCeldaBordePrincipal(Vector2Int c)
     {
         return bordesArriba.Contains(c) || bordesAbajo.Contains(c) || bordesIzq.Contains(c) || bordesDer.Contains(c)
             || esquSupIzq.Contains(c) || esquSupDer.Contains(c) || esquInfIzq.Contains(c) || esquInfDer.Contains(c);
     }
 
-    // ---------------- Util / Instanciación segura ----------------
+    //instanciar un prefab en una celda concreta, con orden y marca, si no existe ya uno con esa marca
     void InstanciarConOrdenSiNoExiste(GameObject prefab, Vector2Int celda, int sortingOrder, CeldaEstado marca, float yOffset = 0f)
     {
         if (prefab == null) return;
@@ -354,10 +396,8 @@ public class GeneradorMazmorra : MonoBehaviour
         if (!estados.ContainsKey(celda)) estados[celda] = CeldaEstado.Ninguno;
         var actual = estados[celda];
 
-        // si ya hay la misma marca, no duplicar
         if ((actual & marca) != 0) return;
 
-        // marcar la celda antes de instanciar para evitar reentradas
         estados[celda] = actual | marca;
 
         var obj = Instantiate(prefab, new Vector3(celda.x, celda.y + yOffset, 0f), Quaternion.identity, transform);
@@ -370,7 +410,6 @@ public class GeneradorMazmorra : MonoBehaviour
 
     void LimpiarHijos()
     {
-        // destroy immediate in editor, normal destroy in play mode
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             var go = transform.GetChild(i).gameObject;
