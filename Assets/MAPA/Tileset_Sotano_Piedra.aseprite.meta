@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 04bf668373823e442852b953ca7deaa8
+guid: 46e26f5c5fb96014dbc91757da439f12
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -73,7 +73,7 @@ ScriptedImporter:
   previousAsepriteImporterSettings:
     fileImportMode: 0
     importHiddenLayers: 0
-    layerImportMode: 0
+    layerImportMode: 1
     defaultPivotSpace: 0
     defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
@@ -86,7 +86,7 @@ ScriptedImporter:
   asepriteImporterSettings:
     fileImportMode: 0
     importHiddenLayers: 0
-    layerImportMode: 0
+    layerImportMode: 1
     defaultPivotSpace: 0
     defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
@@ -97,7 +97,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639003550457580775
+  platformSettingsDirtyTick: 639010464555443555
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,9 +122,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Tileset_Basement
+  - name: Tileset_Sotano_Piedra
     originalName: 
-    pivot: {x: 0.49999997, y: 0}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -132,9 +132,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 62
-      height: 104
-    spriteID: cbb4d7d1803e3c749ae4eb4cc6779be4
+      width: 96
+      height: 128
+    spriteID: 70522040146af6b408cb27749e8643b6
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -144,7 +144,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
   spriteSheetImportData:
-  - name: Tileset_Basement_0
+  - name: Tileset_Sotano_Piedra_0
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -153,10 +153,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 92
+      y: 116
       width: 16
       height: 16
-    spriteID: 57f50cb29dcea4c4f98e33e6fb298434
+    spriteID: 22ed4d4ffc1fd6e4b96b417e450b9364
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -165,7 +165,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_1
+  - name: Tileset_Sotano_Piedra_1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -174,10 +174,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 92
+      y: 116
       width: 16
       height: 16
-    spriteID: d3543a09e57fc654f9f8bd129394b502
+    spriteID: 560afd8337e5c8240ae0436a88e7eb27
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -186,7 +186,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_2
+  - name: Tileset_Sotano_Piedra_2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -195,10 +195,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 92
+      y: 116
       width: 16
       height: 16
-    spriteID: fc62c2e8f1790b14cb389e85f8ce90a6
+    spriteID: af9c0ca32ad787446a617ce8c6c68bb0
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -207,7 +207,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_3
+  - name: Tileset_Sotano_Piedra_3
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -216,10 +216,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 52
-      y: 92
+      y: 116
       width: 16
       height: 16
-    spriteID: 7140c5c00233e364c99cd67784fe2ec0
+    spriteID: 87d834f7b7ccf1848bc800335c08e8ba
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -228,7 +228,49 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_4
+  - name: Tileset_Sotano_Piedra_4
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 116
+      width: 16
+      height: 16
+    spriteID: 25551916c5e0fa74a96f709da1ab249c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_5
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 116
+      width: 16
+      height: 16
+    spriteID: 94287a5e11b1fb4469cebab92acde36a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_6
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -237,10 +279,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 76
+      y: 100
       width: 16
       height: 16
-    spriteID: 25e75db50330bf24089caa41fa2835d6
+    spriteID: b7cdc741c0fcb214bb1e562752208f62
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -249,7 +291,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_5
+  - name: Tileset_Sotano_Piedra_7
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -258,10 +300,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 76
+      y: 100
       width: 16
       height: 16
-    spriteID: b645486d3f3fd4e43b1372452f0c11a8
+    spriteID: b33fb1a710224b04dba9f5b7c14129c2
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -270,7 +312,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_6
+  - name: Tileset_Sotano_Piedra_8
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -279,10 +321,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 76
+      y: 100
       width: 16
       height: 16
-    spriteID: fe90c29d290dea945966666b47220f4a
+    spriteID: 0818dd3522b589f4084553c5a26db276
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -291,7 +333,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_7
+  - name: Tileset_Sotano_Piedra_9
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -300,10 +342,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 52
-      y: 76
+      y: 100
       width: 16
       height: 16
-    spriteID: de99d464012c368409da4f79e968301a
+    spriteID: edccca0da32351c4cb4894e4cc5d0a40
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -312,7 +354,49 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_8
+  - name: Tileset_Sotano_Piedra_10
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 100
+      width: 16
+      height: 16
+    spriteID: b86614ac9893f4c49945fc67d03f4d17
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_11
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 100
+      width: 16
+      height: 16
+    spriteID: efd73dd0e65469f4fa268875bcf9958a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_12
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -321,10 +405,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 60
+      y: 84
       width: 16
       height: 16
-    spriteID: 0ef1fa88d1f420949b36c3ca312c1b53
+    spriteID: 73e8945091ed14d41be3c06912ebd3d3
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -333,7 +417,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_9
+  - name: Tileset_Sotano_Piedra_13
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -342,10 +426,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 60
+      y: 84
       width: 16
       height: 16
-    spriteID: 7d0e01ef32769a642a73340450c4d3f6
+    spriteID: 472444893714baa42a19eba928a9fb0a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -354,7 +438,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_10
+  - name: Tileset_Sotano_Piedra_14
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -363,10 +447,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 60
+      y: 84
       width: 16
       height: 16
-    spriteID: 263d66fe4b3946841ae05566260cbb39
+    spriteID: 906f140573c3c2f46a764d7c10837fb7
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -375,7 +459,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_11
+  - name: Tileset_Sotano_Piedra_15
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -384,10 +468,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 52
-      y: 60
+      y: 84
       width: 16
       height: 16
-    spriteID: 21f0ca296317b5f40bd4d0b01a599b79
+    spriteID: 6e0bffebadcbc644682a96c3d62c8ec6
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -396,7 +480,49 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_12
+  - name: Tileset_Sotano_Piedra_16
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 84
+      width: 16
+      height: 16
+    spriteID: b8423037190c34b4785a6ae32de5c7ad
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_17
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 84
+      width: 16
+      height: 16
+    spriteID: 818018823dfc746459df93445780f5e7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_18
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -405,10 +531,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 44
+      y: 68
       width: 16
       height: 16
-    spriteID: 1d72d5809a7d79246b5cc4f21966d1c9
+    spriteID: fb64384dda4abe948b6e815a8eea56a9
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -417,7 +543,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_13
+  - name: Tileset_Sotano_Piedra_19
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -426,10 +552,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 44
+      y: 68
       width: 16
       height: 16
-    spriteID: 65f91eddc28e45f43b383d96529a897a
+    spriteID: f77232c319629064cacad7075a603a13
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -438,7 +564,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_14
+  - name: Tileset_Sotano_Piedra_20
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -447,10 +573,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 44
+      y: 68
       width: 16
       height: 16
-    spriteID: abcc37676aa5f1e408f3c31bd44d5d5e
+    spriteID: 54b29d3e1f8daff4fa27dbefeb941e01
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -459,7 +585,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_15
+  - name: Tileset_Sotano_Piedra_21
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -468,10 +594,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 52
-      y: 44
+      y: 68
       width: 16
       height: 16
-    spriteID: b90787590f7bc354eb5617fb6ea8cfc3
+    spriteID: 048e65818ed222d4a9de68a60a2ba399
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -480,7 +606,49 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_16
+  - name: Tileset_Sotano_Piedra_22
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 68
+      width: 16
+      height: 16
+    spriteID: 042a23739c418d44a86b4f3edce60c87
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_23
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 68
+      width: 16
+      height: 16
+    spriteID: 8e796a1e74ee53e4788d18ad122318e9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_24
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -489,10 +657,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 28
+      y: 52
       width: 16
       height: 16
-    spriteID: 9cfa1f14a28a27749a33a849e8da037a
+    spriteID: 2fff954314f025c498acafb4ca711951
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -501,7 +669,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_17
+  - name: Tileset_Sotano_Piedra_25
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -510,10 +678,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 28
+      y: 52
       width: 16
       height: 16
-    spriteID: 8b17638ef6b68d74c8a778a49d4fffa3
+    spriteID: 2684a247a850ee24eb0b49699b67466c
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -522,7 +690,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_18
+  - name: Tileset_Sotano_Piedra_26
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -531,10 +699,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 28
+      y: 52
       width: 16
       height: 16
-    spriteID: 6b24d8ee1df2a5f43b4b03e5bb9bc56a
+    spriteID: 70d95fe418755ed49a0193f244983fa0
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -543,7 +711,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_19
+  - name: Tileset_Sotano_Piedra_27
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -552,10 +720,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 52
-      y: 28
+      y: 52
       width: 16
       height: 16
-    spriteID: 02ad24d8837626647ba19b3ddfc4c257
+    spriteID: d5fa622afe975c34898d95c09b3d7396
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -564,7 +732,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_20
+  - name: Tileset_Sotano_Piedra_28
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -573,10 +741,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 12
+      y: 36
       width: 16
       height: 16
-    spriteID: af51e35c02f139d4fbcc0c73d12ca802
+    spriteID: 5e48372a4040bb34390dc5543eef5058
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -585,7 +753,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_21
+  - name: Tileset_Sotano_Piedra_29
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -594,10 +762,10 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 20
-      y: 12
+      y: 36
       width: 16
       height: 16
-    spriteID: 0525ddfdcd1ac9945841b0011c7c6d05
+    spriteID: 3d26e410451c75b4d845d1918a548bcb
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -606,7 +774,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: Tileset_Basement_22
+  - name: Tileset_Sotano_Piedra_30
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -615,10 +783,178 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 36
-      y: 12
+      y: 36
       width: 16
       height: 16
-    spriteID: 57914d23cc1da3c41a29d97ea6309b7a
+    spriteID: 2a915102186935243ab14ce0868abad4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_31
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 52
+      y: 36
+      width: 16
+      height: 16
+    spriteID: f3db4836c3ff5f340bf221726d7bc23a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_32
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 36
+      width: 16
+      height: 16
+    spriteID: f7c2bf4adea382146b863f98338eb7fd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_33
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 20
+      width: 16
+      height: 16
+    spriteID: f780bf0b583f9964caf2bb5e7d3f5522
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_34
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 20
+      y: 20
+      width: 16
+      height: 16
+    spriteID: 7f61c9c63daf62a4d867dba4aee812da
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_35
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 52
+      y: 20
+      width: 16
+      height: 16
+    spriteID: b250daca2d402804da9ff3175412439a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_36
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 16
+      height: 16
+    spriteID: d770c52b0089fce4589c67a483c1ada6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_37
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 20
+      y: 4
+      width: 16
+      height: 16
+    spriteID: 88059925ab414714aabb153388325301
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Tileset_Sotano_Piedra_38
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 52
+      y: 4
+      width: 16
+      height: 16
+    spriteID: e06db435778748c4f9e2aa645c86711b
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -635,15 +971,15 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: Layer 1
+    - name: Tileset_Sotano_Piedra
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 9
+        x: 0
         y: 0
-        width: 62
-        height: 104
-      spriteId: 2f58530361f87874c83caa1f97ea2e7c
+        width: 96
+        height: 128
+      spriteId: 3e55cfc7006efdc43af774b170c89626
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -698,4 +1034,4 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 80, y: 112}
+  canvasSize: {x: 96, y: 128}
