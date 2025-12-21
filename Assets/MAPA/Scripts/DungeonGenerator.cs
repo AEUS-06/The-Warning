@@ -9,29 +9,45 @@ public class GeneradorDungeon : MonoBehaviour
     public Tilemap tilemapParedesBase;
     public Tilemap tilemapParedesTop;
 
+    [Header("Tilemaps Esquinas Externas")]
+    public Tilemap tilemapEsquinasExtBase;
+    public Tilemap tilemapEsquinasExtTop;
+
     [Header("Suelo")]
     public TileBase tileSuelo;
 
-    [Header("Paredes Simples (1 Tile)")]
+    [Header("Paredes Simples")]
     public TileBase paredArriba;
     public TileBase paredAbajo;
     public TileBase paredIzquierda;
     public TileBase paredDerecha;
 
-    [Header("Esquinas Inferiores (1 Tile)")]
+    [Header("Esquinas Internas Inferiores")]
     public TileBase esquinaInfIzq;
     public TileBase esquinaInfDer;
 
-    [Header("Esquinas Superiores BASE")]
+    [Header("Esquinas Internas Superiores BASE")]
     public TileBase esquinaSupIzqBase;
     public TileBase esquinaSupDerBase;
 
-    [Header("Esquinas Superiores TOP")]
+    [Header("Esquinas Internas Superiores TOP")]
     public TileBase esquinaSupIzqTop;
     public TileBase esquinaSupDerTop;
 
     [Header("Pared Superior TOP")]
     public TileBase paredArribaTop;
+
+    [Header("Esquinas Externas Inferiores")]
+    public TileBase extInfIzq;
+    public TileBase extInfDer;
+
+    [Header("Esquinas Externas Superiores BASE")]
+    public TileBase extSupIzqBase;
+    public TileBase extSupDerBase;
+
+    [Header("Esquinas Externas Superiores TOP")]
+    public TileBase extSupIzqTop;
+    public TileBase extSupDerTop;
 
     [Header("Dungeon")]
     public int numeroSalas = 6;
@@ -62,11 +78,14 @@ public class GeneradorDungeon : MonoBehaviour
         tilemapSuelo.ClearAllTiles();
         tilemapParedesBase.ClearAllTiles();
         tilemapParedesTop.ClearAllTiles();
+        tilemapEsquinasExtBase.ClearAllTiles();
+        tilemapEsquinasExtTop.ClearAllTiles();
         suelo.Clear();
         salas.Clear();
     }
 
-    // GENERACION
+    //GENERACION
+
     void GenerarDungeon()
     {
         GenerarSalas();
@@ -128,7 +147,8 @@ public class GeneradorDungeon : MonoBehaviour
             tilemapSuelo.SetTile((Vector3Int)p, tileSuelo);
     }
 
-    // PAREDES
+    //PAREDES
+
     void GenerarParedes()
     {
         HashSet<Vector2Int> paredes = new HashSet<Vector2Int>();
@@ -148,7 +168,8 @@ public class GeneradorDungeon : MonoBehaviour
             AnalizarYPonerPared(p);
     }
 
-    // LOGICA PAREDES
+    //LOGICA
+
     void AnalizarYPonerPared(Vector2Int pos)
     {
         bool A = suelo.Contains(pos + Vector2Int.up);
@@ -156,9 +177,14 @@ public class GeneradorDungeon : MonoBehaviour
         bool I = suelo.Contains(pos + Vector2Int.left);
         bool D = suelo.Contains(pos + Vector2Int.right);
 
-        // ESQUINAS SUPERIORES (2 tiles)
+        bool AI = suelo.Contains(pos + Vector2Int.up + Vector2Int.left);
+        bool AD = suelo.Contains(pos + Vector2Int.up + Vector2Int.right);
+        bool BI = suelo.Contains(pos + Vector2Int.down + Vector2Int.left);
+        bool BD = suelo.Contains(pos + Vector2Int.down + Vector2Int.right);
+
+        //ESQUINAS INTERNAS SUPERIORES
         if (B && D && !A && !I)
-        {
+        { 
             tilemapParedesBase.SetTile((Vector3Int)pos, esquinaSupIzqBase);
             tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), esquinaSupIzqTop);
             return;
@@ -171,15 +197,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // PARED SUPERIOR
-        if (B && !A)
-        {
-            tilemapParedesBase.SetTile((Vector3Int)pos, paredArriba);
-            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), paredArribaTop);
-            return;
-        }
-
-        // ESQUINAS INFERIORES
+        //ESQUINAS INTERNAS INFERIORES
         if (A && D && !B && !I)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, esquinaInfIzq);
@@ -192,21 +210,59 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // PARED INFERIOR
-        if (A && !B)
+        //ESQUINAS EXTERNAS SUPERIORES IZQUIERDA
+        if (!A && !B && !I && !D && BI && !AI)
+        {
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extSupIzqBase);
+            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), extSupIzqTop);
+            return;
+        }
+
+        //ESQUINAS EXTERNAS SUPERIORES DERECHA
+        if (!A && !B && !I && !D && BD && !AD)
+        {
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extSupDerBase);
+            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), extSupDerTop);
+            return;
+        }
+
+        //ESQUINAS EXTERNAS INFERIORES IZQUIERDA
+        if (!A && !B && !I && !D && AI && !BI)
+        {
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extInfIzq);
+            return;
+        }
+
+        //ESQUINAS EXTERNAS INFERIORES DERECHA
+        if (!A && !B && !I && !D && AD && !BD)
+        {
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extInfDer);
+            return;
+        }
+
+        //PARED SUPERIOR
+        if (B && !A && !I && !D)
+        {
+            tilemapParedesBase.SetTile((Vector3Int)pos, paredArriba);
+            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), paredArribaTop);
+            return;
+        }
+
+        //PARED INFERIOR
+        if (A && !B && !I && !D)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, paredAbajo);
             return;
         }
 
-        // LATERALES
-        if (D && !I)
+        //LATERALES
+        if (D && !I && !A && !B)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, paredIzquierda);
             return;
         }
 
-        if (I && !D)
+        if (I && !D && !A && !B)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, paredDerecha);
             return;
