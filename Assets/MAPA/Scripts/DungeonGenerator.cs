@@ -15,39 +15,80 @@ public class GeneradorDungeon : MonoBehaviour
 
     [Header("Suelo")]
     public TileBase tileSuelo;
+    [Header("Variaciones Suelo")]
+    public TileBase[] variacionesSuelo;
+    [Range(0f, 1f)]
+    public float probabilidadVariacionSuelo = 0.3f;
 
     [Header("Paredes Simples")]
     public TileBase paredArriba;
     public TileBase paredAbajo;
     public TileBase paredIzquierda;
     public TileBase paredDerecha;
+    
+    [Header("Variaciones Pared Arriba")]
+    public TileBase[] variacionesParedArriba;
+    [Header("Variaciones Pared Abajo")]
+    public TileBase[] variacionesParedAbajo;
+    [Header("Variaciones Pared Izquierda")]
+    public TileBase[] variacionesParedIzquierda;
+    [Header("Variaciones Pared Derecha")]
+    public TileBase[] variacionesParedDerecha;
+    [Range(0f, 1f)]
+    public float probabilidadVariacionPared = 0.2f;
 
     [Header("Esquinas Internas Inferiores")]
     public TileBase esquinaInfIzq;
     public TileBase esquinaInfDer;
+    [Header("Variaciones Esquina Inf Izq")]
+    public TileBase[] variacionesEsquinaInfIzq;
+    [Header("Variaciones Esquina Inf Der")]
+    public TileBase[] variacionesEsquinaInfDer;
 
     [Header("Esquinas Internas Superiores BASE")]
     public TileBase esquinaSupIzqBase;
     public TileBase esquinaSupDerBase;
+    [Header("Variaciones Esquina Sup Izq Base")]
+    public TileBase[] variacionesEsquinaSupIzqBase;
+    [Header("Variaciones Esquina Sup Der Base")]
+    public TileBase[] variacionesEsquinaSupDerBase;
 
     [Header("Esquinas Internas Superiores TOP")]
     public TileBase esquinaSupIzqTop;
     public TileBase esquinaSupDerTop;
+    [Header("Variaciones Esquina Sup Izq Top")]
+    public TileBase[] variacionesEsquinaSupIzqTop;
+    [Header("Variaciones Esquina Sup Der Top")]
+    public TileBase[] variacionesEsquinaSupDerTop;
 
     [Header("Pared Superior TOP")]
     public TileBase paredArribaTop;
+    [Header("Variaciones Pared Arriba Top")]
+    public TileBase[] variacionesParedArribaTop;
 
     [Header("Esquinas Externas Inferiores")]
     public TileBase extInfIzq;
     public TileBase extInfDer;
+    [Header("Variaciones Esquina Ext Inf Izq")]
+    public TileBase[] variacionesExtInfIzq;
+    [Header("Variaciones Esquina Ext Inf Der")]
+    public TileBase[] variacionesExtInfDer;
 
     [Header("Esquinas Externas Superiores BASE")]
     public TileBase extSupIzqBase;
     public TileBase extSupDerBase;
+    [Header("Variaciones Esquina Ext Sup Izq Base")]
+    public TileBase[] variacionesExtSupIzqBase;
+    [Header("Variaciones Esquina Ext Sup Der Base")]
+    public TileBase[] variacionesExtSupDerBase;
 
     [Header("Esquinas Externas Superiores TOP")]
     public TileBase extSupIzqTop;
     public TileBase extSupDerTop;
+    [Header("Variaciones Esquina Ext Sup Izq Top")]
+    public TileBase[] variacionesExtSupIzqTop;
+    [Header("Variaciones Esquina Ext Sup Der Top")]
+    public TileBase[] variacionesExtSupDerTop;
 
     [Header("Dungeon")]
     public int numeroSalas = 6;
@@ -58,6 +99,17 @@ public class GeneradorDungeon : MonoBehaviour
 
     private HashSet<Vector2Int> suelo = new HashSet<Vector2Int>();
     private List<RectInt> salas = new List<RectInt>();
+    
+    // Método auxiliar para obtener variaciones aleatorias
+    private TileBase ObtenerVariacion(TileBase tileBase, TileBase[] variaciones, float probabilidad = 0.3f)
+    {
+        // Si no hay variaciones o no se activa la probabilidad, usar el tile base
+        if (variaciones == null || variaciones.Length == 0 || Random.value > probabilidad)
+            return tileBase;
+        
+        // Seleccionar una variación aleatoria
+        return variaciones[Random.Range(0, variaciones.Length)];
+    }
 
     void Start()
     {
@@ -84,7 +136,7 @@ public class GeneradorDungeon : MonoBehaviour
         salas.Clear();
     }
 
-    //GENERACION
+    //GENERACIÓN
 
     void GenerarDungeon()
     {
@@ -120,7 +172,9 @@ public class GeneradorDungeon : MonoBehaviour
                 {
                     Vector2Int p = new Vector2Int(i, j);
                     suelo.Add(p);
-                    tilemapSuelo.SetTile((Vector3Int)p, tileSuelo);
+                    // Usar variaciones para el suelo
+                    tilemapSuelo.SetTile((Vector3Int)p, 
+                        ObtenerVariacion(tileSuelo, variacionesSuelo, probabilidadVariacionSuelo));
                 }
             }
         }
@@ -144,7 +198,8 @@ public class GeneradorDungeon : MonoBehaviour
     void PonerSuelo(Vector2Int p)
     {
         if (suelo.Add(p))
-            tilemapSuelo.SetTile((Vector3Int)p, tileSuelo);
+            tilemapSuelo.SetTile((Vector3Int)p, 
+                ObtenerVariacion(tileSuelo, variacionesSuelo, probabilidadVariacionSuelo));
     }
 
     //PAREDES
@@ -168,7 +223,7 @@ public class GeneradorDungeon : MonoBehaviour
             AnalizarYPonerPared(p);
     }
 
-    //LOGICA
+    //LÓGICA CORREGIDA PARA ESQUINAS EXTERNAS
 
     void AnalizarYPonerPared(Vector2Int pos)
     {
@@ -182,89 +237,106 @@ public class GeneradorDungeon : MonoBehaviour
         bool BI = suelo.Contains(pos + Vector2Int.down + Vector2Int.left);
         bool BD = suelo.Contains(pos + Vector2Int.down + Vector2Int.right);
 
-        //ESQUINAS INTERNAS SUPERIORES
+        // ================= ESQUINAS INTERNAS SUPERIORES =================
         if (B && D && !A && !I)
         { 
-            tilemapParedesBase.SetTile((Vector3Int)pos, esquinaSupIzqBase);
-            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), esquinaSupIzqTop);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(esquinaSupIzqBase, variacionesEsquinaSupIzqBase, probabilidadVariacionPared));
+            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), 
+                ObtenerVariacion(esquinaSupIzqTop, variacionesEsquinaSupIzqTop, probabilidadVariacionPared));
             return;
         }
 
         if (B && I && !A && !D)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, esquinaSupDerBase);
-            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), esquinaSupDerTop);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(esquinaSupDerBase, variacionesEsquinaSupDerBase, probabilidadVariacionPared));
+            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), 
+                ObtenerVariacion(esquinaSupDerTop, variacionesEsquinaSupDerTop, probabilidadVariacionPared));
             return;
         }
 
-        //ESQUINAS INTERNAS INFERIORES
+        // ================= ESQUINAS INTERNAS INFERIORES =================
         if (A && D && !B && !I)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, esquinaInfIzq);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(esquinaInfIzq, variacionesEsquinaInfIzq, probabilidadVariacionPared));
             return;
         }
 
         if (A && I && !B && !D)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, esquinaInfDer);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(esquinaInfDer, variacionesEsquinaInfDer, probabilidadVariacionPared));
             return;
         }
 
-        //ESQUINAS EXTERNAS SUPERIORES IZQUIERDA
+        // ================= ESQUINAS EXTERNAS SUPERIORES IZQUIERDA =================
         if (!A && !B && !I && !D && BI && !AI)
         {
-            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extSupIzqBase);
-            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), extSupIzqTop);
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(extSupIzqBase, variacionesExtSupIzqBase, probabilidadVariacionPared));
+            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), 
+                ObtenerVariacion(extSupIzqTop, variacionesExtSupIzqTop, probabilidadVariacionPared));
             return;
         }
 
-        //ESQUINAS EXTERNAS SUPERIORES DERECHA
+        // ================= ESQUINAS EXTERNAS SUPERIORES DERECHA =================
         if (!A && !B && !I && !D && BD && !AD)
         {
-            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extSupDerBase);
-            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), extSupDerTop);
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(extSupDerBase, variacionesExtSupDerBase, probabilidadVariacionPared));
+            tilemapEsquinasExtTop.SetTile((Vector3Int)(pos + Vector2Int.up), 
+                ObtenerVariacion(extSupDerTop, variacionesExtSupDerTop, probabilidadVariacionPared));
             return;
         }
 
-        //ESQUINAS EXTERNAS INFERIORES IZQUIERDA
+        // ================= ESQUINAS EXTERNAS INFERIORES IZQUIERDA =================
         if (!A && !B && !I && !D && AI && !BI)
         {
-            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extInfIzq);
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(extInfIzq, variacionesExtInfIzq, probabilidadVariacionPared));
             return;
         }
 
-        //ESQUINAS EXTERNAS INFERIORES DERECHA
+        // ================= ESQUINAS EXTERNAS INFERIORES DERECHA =================
         if (!A && !B && !I && !D && AD && !BD)
         {
-            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, extInfDer);
+            tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(extInfDer, variacionesExtInfDer, probabilidadVariacionPared));
             return;
         }
 
-        //PARED SUPERIOR
+        // ================= PARED SUPERIOR =================
         if (B && !A && !I && !D)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, paredArriba);
-            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), paredArribaTop);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(paredArriba, variacionesParedArriba, probabilidadVariacionPared));
+            tilemapParedesTop.SetTile((Vector3Int)(pos + Vector2Int.up), 
+                ObtenerVariacion(paredArribaTop, variacionesParedArribaTop, probabilidadVariacionPared));
             return;
         }
 
-        //PARED INFERIOR
+        // ================= PARED INFERIOR =================
         if (A && !B && !I && !D)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, paredAbajo);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(paredAbajo, variacionesParedAbajo, probabilidadVariacionPared));
             return;
         }
 
-        //LATERALES
+        // ================= LATERALES =================
         if (D && !I && !A && !B)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, paredIzquierda);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(paredIzquierda, variacionesParedIzquierda, probabilidadVariacionPared));
             return;
         }
 
         if (I && !D && !A && !B)
         {
-            tilemapParedesBase.SetTile((Vector3Int)pos, paredDerecha);
+            tilemapParedesBase.SetTile((Vector3Int)pos, 
+                ObtenerVariacion(paredDerecha, variacionesParedDerecha, probabilidadVariacionPared));
             return;
         }
     }
