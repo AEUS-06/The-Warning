@@ -100,14 +100,12 @@ public class GeneradorDungeon : MonoBehaviour
     private HashSet<Vector2Int> suelo = new HashSet<Vector2Int>();
     private List<RectInt> salas = new List<RectInt>();
     
-    // Método auxiliar para obtener variaciones aleatorias
+    //obtener variaciones aleatorias
     private TileBase ObtenerVariacion(TileBase tileBase, TileBase[] variaciones, float probabilidad = 0.3f)
     {
-        // Si no hay variaciones o no se activa la probabilidad, usar el tile base
         if (variaciones == null || variaciones.Length == 0 || Random.value > probabilidad)
             return tileBase;
         
-        // Seleccionar una variación aleatoria
         return variaciones[Random.Range(0, variaciones.Length)];
     }
 
@@ -136,7 +134,7 @@ public class GeneradorDungeon : MonoBehaviour
         salas.Clear();
     }
 
-    //GENERACIÓN
+    //GENERACION
 
     void GenerarDungeon()
     {
@@ -223,7 +221,7 @@ public class GeneradorDungeon : MonoBehaviour
             AnalizarYPonerPared(p);
     }
 
-    //LÓGICA CORREGIDA PARA ESQUINAS EXTERNAS
+    //LOGICA
 
     void AnalizarYPonerPared(Vector2Int pos)
     {
@@ -237,7 +235,7 @@ public class GeneradorDungeon : MonoBehaviour
         bool BI = suelo.Contains(pos + Vector2Int.down + Vector2Int.left);
         bool BD = suelo.Contains(pos + Vector2Int.down + Vector2Int.right);
 
-        // ================= ESQUINAS INTERNAS SUPERIORES =================
+        //ESQUINAS INTERNAS SUPERIORES
         if (B && D && !A && !I)
         { 
             tilemapParedesBase.SetTile((Vector3Int)pos, 
@@ -256,7 +254,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= ESQUINAS INTERNAS INFERIORES =================
+        //ESQUINAS INTERNAS INFERIORES
         if (A && D && !B && !I)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, 
@@ -271,7 +269,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= ESQUINAS EXTERNAS SUPERIORES IZQUIERDA =================
+        //ESQUINAS EXTERNAS SUPERIORES IZQUIERDA
         if (!A && !B && !I && !D && BI && !AI)
         {
             tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
@@ -281,7 +279,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= ESQUINAS EXTERNAS SUPERIORES DERECHA =================
+        //ESQUINAS EXTERNAS SUPERIORES DERECHA
         if (!A && !B && !I && !D && BD && !AD)
         {
             tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
@@ -291,7 +289,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= ESQUINAS EXTERNAS INFERIORES IZQUIERDA =================
+        //ESQUINAS EXTERNAS INFERIORES IZQUIERDA
         if (!A && !B && !I && !D && AI && !BI)
         {
             tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
@@ -299,7 +297,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= ESQUINAS EXTERNAS INFERIORES DERECHA =================
+        //ESQUINAS EXTERNAS INFERIORES DERECHA
         if (!A && !B && !I && !D && AD && !BD)
         {
             tilemapEsquinasExtBase.SetTile((Vector3Int)pos, 
@@ -307,7 +305,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= PARED SUPERIOR =================
+        //PARED SUPERIOR
         if (B && !A && !I && !D)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, 
@@ -317,7 +315,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= PARED INFERIOR =================
+        //PARED INFERIOR
         if (A && !B && !I && !D)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, 
@@ -325,7 +323,7 @@ public class GeneradorDungeon : MonoBehaviour
             return;
         }
 
-        // ================= LATERALES =================
+        //LATERALES
         if (D && !I && !A && !B)
         {
             tilemapParedesBase.SetTile((Vector3Int)pos, 
