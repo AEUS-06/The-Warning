@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639010464555443555
+  platformSettingsDirtyTick: 639020368108796408
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -968,7 +968,28 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  tileSetImportData: []
+  tileSetImportData:
+  - name: Layer 1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 96
+      height: 128
+    spriteID: 3e55cfc7006efdc43af774b170c89626
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -1040,6 +1061,18 @@ ScriptedImporter:
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: WebGL
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     forceMaximumCompressionQuality_BC6H_BC7: 0
     crunchedCompression: 0
