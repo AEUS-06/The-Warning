@@ -4,6 +4,24 @@ using UnityEngine.Tilemaps;
 
 public class GeneradorDungeon : MonoBehaviour
 {
+    [System.Serializable]
+    public class DungeonRoomConfig
+    {
+        public string nombreTipo;              // "normal", "tesoro", "enemigos", "boss", etc.
+        [Range(0f, 1f)]
+        public float probabilidadTipo = 0.7f;  // Probabilidad de que aparezca este tipo
+        [Range(0, 10)]
+        public int minObjetos = 1;             // Mínimo de objetos en esta sala
+        [Range(0, 10)]
+        public int maxObjetos = 5;             // Máximo de objetos en esta sala
+        public GameObject[] objetosPosibles;   // Prefabs que pueden aparecer
+        public Color colorDebug = Color.white; // Color para debug visual
+        [Range(0f, 1f)]
+        public float densidadObjetos = 0.3f;   // Qué tan densos son los objetos
+        public bool objetosEnCentro = false;   // Si los objetos deben ir más al centro
+        public float distanciaMinimaEntreObjetos = 1.5f; // Distancia mínima entre objetos
+    }
+
     [Header("Tilemaps")]
     public Tilemap tilemapSuelo;
     public Tilemap tilemapParedesBase;
@@ -88,9 +106,50 @@ public class GeneradorDungeon : MonoBehaviour
     [Range(0f, 1f)]
     public float densidadPasillos = 1.0f;
 
+    [Header("Configuración Tipos de Sala")]
+    public DungeonRoomConfig[] configuracionesSalas = {
+        new DungeonRoomConfig { 
+            nombreTipo = "normal", 
+            probabilidadTipo = 0.6f,
+            minObjetos = 1,
+            maxObjetos = 4,
+            colorDebug = Color.gray
+        },
+        new DungeonRoomConfig { 
+            nombreTipo = "tesoro", 
+            probabilidadTipo = 0.15f,
+            minObjetos = 2,
+            maxObjetos = 6,
+            colorDebug = Color.yellow,
+            objetosEnCentro = true
+        },
+        new DungeonRoomConfig { 
+            nombreTipo = "enemigos", 
+            probabilidadTipo = 0.2f,
+            minObjetos = 3,
+            maxObjetos = 8,
+            colorDebug = Color.red,
+            densidadObjetos = 0.4f
+        },
+        new DungeonRoomConfig { 
+            nombreTipo = "boss", 
+            probabilidadTipo = 0.05f,
+            minObjetos = 5,
+            maxObjetos = 10,
+            colorDebug = Color.magenta,
+            objetosEnCentro = true
+        }
+    };
+
+    [Header("Debug Visual")]
+    public bool mostrarDebugVisual = true;
+    public float duracionDebug = 5f;
+
     // Variables internas
     private HashSet<Vector2Int> suelo = new HashSet<Vector2Int>();
     private List<RectInt> salas = new List<RectInt>();
+    private Dictionary<RectInt, string> tiposSalas = new Dictionary<RectInt, string>();
+    private Dictionary<RectInt, List<GameObject>> objetosPorSala = new Dictionary<RectInt, List<GameObject>>();
 
     void Start()
     {
@@ -104,17 +163,35 @@ public class GeneradorDungeon : MonoBehaviour
             LimpiarTodo();
             GenerarDungeon();
         }
+        
+        if (Input.GetKeyDown(KeyCode.D) && mostrarDebugVisual)
+        {
+            MostrarDebugVisual();
+        }
     }
 
     void LimpiarTodo()
     {
+        // Limpiar tilemaps
         tilemapSuelo.ClearAllTiles();
         tilemapParedesBase.ClearAllTiles();
         tilemapParedesTop.ClearAllTiles();
         tilemapEsquinasExtBase.ClearAllTiles();
         tilemapEsquinasExtTop.ClearAllTiles();
+        
+        // Limpiar objetos
+        foreach (var listaObjetos in objetosPorSala.Values)
+        {
+            foreach (var obj in listaObjetos)
+            {
+                if (obj != null) Destroy(obj);
+            }
+        }
+        
         suelo.Clear();
         salas.Clear();
+        tiposSalas.Clear();
+        objetosPorSala.Clear();
     }
 
     void GenerarDungeon()
@@ -132,6 +209,10 @@ public class GeneradorDungeon : MonoBehaviour
         GenerarSalas();
         ConectarSalas();
         GenerarParedes();
+        GenerarObjetosPorTipoSala();
+        
+        Debug.Log($"Dungeon generado: {salas.Count} salas");
+        MostrarEstadisticasSalas();
     }
 
     void GenerarSalas()
@@ -178,6 +259,11 @@ public class GeneradorDungeon : MonoBehaviour
             {
                 salas.Add(nuevaSala);
                 
+                // Asignar tipo a la sala
+                string tipoSala = AsignarTipoSala();
+                tiposSalas[nuevaSala] = tipoSala;
+                objetosPorSala[nuevaSala] = new List<GameObject>();
+                
                 // Añadir suelo de la sala
                 for (int i = nuevaSala.xMin; i < nuevaSala.xMax; i++)
                 for (int j = nuevaSala.yMin; j < nuevaSala.yMax; j++)
@@ -190,6 +276,31 @@ public class GeneradorDungeon : MonoBehaviour
         }
 
         Debug.Log($"Salas generadas: {salas.Count} de {numeroSalas} solicitadas");
+    }
+
+    string AsignarTipoSala()
+    {
+        // Calcular probabilidad total
+        float totalProb = 0f;
+        foreach (var config in configuracionesSalas)
+        {
+            totalProb += config.probabilidadTipo;
+        }
+        
+        // Seleccionar tipo basado en probabilidad
+        float randomVal = Random.value * totalProb;
+        float acumulado = 0f;
+        
+        foreach (var config in configuracionesSalas)
+        {
+            acumulado += config.probabilidadTipo;
+            if (randomVal <= acumulado)
+            {
+                return config.nombreTipo;
+            }
+        }
+        
+        return "normal"; // Fallback
     }
 
     void ConectarSalas()
@@ -244,13 +355,25 @@ public class GeneradorDungeon : MonoBehaviour
 
     int EncontrarSalaMasCercana(int salaIndex, List<int> salasDisponibles)
     {
-        Vector2Int centroA = Vector2Int.RoundToInt(salas[salaIndex].center);
+        // Calcular centro de la sala A
+        RectInt salaA = salas[salaIndex];
+        Vector2Int centroA = new Vector2Int(
+            salaA.x + salaA.width / 2,
+            salaA.y + salaA.height / 2
+        );
+        
         int salaMasCercana = salasDisponibles[0];
         float distanciaMinima = float.MaxValue;
 
         foreach (int idx in salasDisponibles)
         {
-            Vector2Int centroB = Vector2Int.RoundToInt(salas[idx].center);
+            // Calcular centro de la sala B
+            RectInt salaB = salas[idx];
+            Vector2Int centroB = new Vector2Int(
+                salaB.x + salaB.width / 2,
+                salaB.y + salaB.height / 2
+            );
+            
             float distancia = Vector2Int.Distance(centroA, centroB);
             
             if (distancia < distanciaMinima)
@@ -265,8 +388,16 @@ public class GeneradorDungeon : MonoBehaviour
 
     void ConectarDosSalas(RectInt salaA, RectInt salaB)
     {
-        Vector2Int centroA = Vector2Int.RoundToInt(salaA.center);
-        Vector2Int centroB = Vector2Int.RoundToInt(salaB.center);
+        // Calcular centros
+        Vector2Int centroA = new Vector2Int(
+            salaA.x + salaA.width / 2,
+            salaA.y + salaA.height / 2
+        );
+        
+        Vector2Int centroB = new Vector2Int(
+            salaB.x + salaB.width / 2,
+            salaB.y + salaB.height / 2
+        );
 
         // Decidir ancho del pasillo
         int anchoPasillo = Random.Range(anchoPasilloMin, anchoPasilloMax + 1);
@@ -290,8 +421,11 @@ public class GeneradorDungeon : MonoBehaviour
 
     Vector2Int ObtenerPuntoConexion(RectInt sala, Vector2Int puntoObjetivo)
     {
-        // Encontrar el punto en el borde de la sala más cercano al objetivo
-        Vector2Int centro = Vector2Int.RoundToInt(sala.center);
+        // Calcular centro de la sala
+        Vector2Int centro = new Vector2Int(
+            sala.x + sala.width / 2,
+            sala.y + sala.height / 2
+        );
         
         // Calcular dirección desde el centro al objetivo
         Vector2Int direccion = puntoObjetivo - centro;
@@ -405,6 +539,211 @@ public class GeneradorDungeon : MonoBehaviour
         // Analizar cada posición de pared para decidir qué tile poner
         foreach (var p in paredes)
             AnalizarYPonerPared(p);
+    }
+
+    void GenerarObjetosPorTipoSala()
+    {
+        foreach (var sala in salas)
+        {
+            if (tiposSalas.ContainsKey(sala))
+            {
+                string tipo = tiposSalas[sala];
+                DungeonRoomConfig config = System.Array.Find(configuracionesSalas, c => c.nombreTipo == tipo);
+                
+                if (config != null && config.objetosPosibles != null && config.objetosPosibles.Length > 0)
+                {
+                    GenerarObjetosEnSala(sala, config);
+                }
+            }
+        }
+        
+        Debug.Log($"Objetos totales generados: {ContarTotalObjetos()}");
+    }
+
+    void GenerarObjetosEnSala(RectInt sala, DungeonRoomConfig config)
+    {
+        int numObjetosDeseados = Random.Range(config.minObjetos, config.maxObjetos + 1);
+        int objetosGenerados = 0;
+        int intentosMaximos = numObjetosDeseados * 20;
+        int intentos = 0;
+        
+        List<Vector2Int> posicionesUsadas = new List<Vector2Int>();
+        
+        while (objetosGenerados < numObjetosDeseados && intentos < intentosMaximos)
+        {
+            intentos++;
+            
+            // Obtener posición aleatoria
+            Vector2Int posicion = ObtenerPosicionValidaEnSala(sala, config, posicionesUsadas);
+            
+            if (posicion != Vector2Int.zero)
+            {
+                // Seleccionar objeto aleatorio de los posibles
+                GameObject prefab = config.objetosPosibles[Random.Range(0, config.objetosPosibles.Length)];
+                
+                // Spawnear objeto
+                Vector3 spawnPos = new Vector3(posicion.x + 0.5f, posicion.y + 0.5f, 0);
+                GameObject nuevoObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+                nuevoObj.transform.parent = this.transform;
+                
+                // Guardar en lista
+                objetosPorSala[sala].Add(nuevoObj);
+                posicionesUsadas.Add(posicion);
+                objetosGenerados++;
+                
+                // Aplicar rotación aleatoria si es decorativo
+                if (prefab.CompareTag("Decoracion"))
+                {
+                    nuevoObj.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 4) * 90);
+                }
+            }
+        }
+    }
+
+    Vector2Int ObtenerPosicionValidaEnSala(RectInt sala, DungeonRoomConfig config, List<Vector2Int> posicionesUsadas)
+    {
+        Vector2Int posicion;
+        
+        // Determinar área de spawn basada en configuración
+        if (config.objetosEnCentro)
+        {
+            // Solo en el 50% central de la sala
+            int margenX = sala.width / 4;
+            int margenY = sala.height / 4;
+            int x = Random.Range(sala.xMin + margenX, sala.xMax - margenX);
+            int y = Random.Range(sala.yMin + margenY, sala.yMax - margenY);
+            posicion = new Vector2Int(x, y);
+        }
+        else
+        {
+            // En cualquier lugar de la sala (pero no pegado a las paredes)
+            int x = Random.Range(sala.xMin + 1, sala.xMax - 1);
+            int y = Random.Range(sala.yMin + 1, sala.yMax - 1);
+            posicion = new Vector2Int(x, y);
+        }
+        
+        // Verificar condiciones
+        if (!suelo.Contains(posicion)) return Vector2Int.zero; // No es suelo
+        
+        // Verificar distancia mínima entre objetos
+        foreach (var posUsada in posicionesUsadas)
+        {
+            if (Vector2Int.Distance(posicion, posUsada) < config.distanciaMinimaEntreObjetos)
+            {
+                return Vector2Int.zero;
+            }
+        }
+        
+        // Verificar que no esté en una entrada/pasillo
+        if (EsPosicionCercaDePasillo(posicion, sala))
+        {
+            return Vector2Int.zero;
+        }
+        
+        return posicion;
+    }
+
+    bool EsPosicionCercaDePasillo(Vector2Int pos, RectInt sala)
+    {
+        // Verificar si está cerca de los bordes de la sala (posibles entradas)
+        int distanciaBorde = 2;
+        if (pos.x <= sala.xMin + distanciaBorde || pos.x >= sala.xMax - distanciaBorde - 1 ||
+            pos.y <= sala.yMin + distanciaBorde || pos.y >= sala.yMax - distanciaBorde - 1)
+        {
+            // Verificar si realmente es una entrada (hay suelo continuo fuera)
+            int sueloFuera = 0;
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0) continue;
+                    Vector2Int checkPos = pos + new Vector2Int(dx, dy);
+                    if (suelo.Contains(checkPos) && !sala.Contains(checkPos))
+                    {
+                        sueloFuera++;
+                    }
+                }
+            }
+            return sueloFuera > 0;
+        }
+        
+        return false;
+    }
+
+    void MostrarEstadisticasSalas()
+    {
+        Dictionary<string, int> conteoPorTipo = new Dictionary<string, int>();
+        
+        foreach (var tipo in tiposSalas.Values)
+        {
+            if (conteoPorTipo.ContainsKey(tipo))
+                conteoPorTipo[tipo]++;
+            else
+                conteoPorTipo[tipo] = 1;
+        }
+        
+        Debug.Log("=== ESTADÍSTICAS DE SALAS ===");
+        foreach (var kvp in conteoPorTipo)
+        {
+            Debug.Log($"{kvp.Key}: {kvp.Value} salas");
+        }
+        
+        // Mostrar objetos por tipo
+        Debug.Log("=== OBJETOS POR TIPO DE SALA ===");
+        foreach (var sala in salas)
+        {
+            if (tiposSalas.ContainsKey(sala) && objetosPorSala.ContainsKey(sala))
+            {
+                Debug.Log($"Sala {sala} ({tiposSalas[sala]}): {objetosPorSala[sala].Count} objetos");
+            }
+        }
+    }
+
+    int ContarTotalObjetos()
+    {
+        int total = 0;
+        foreach (var lista in objetosPorSala.Values)
+        {
+            total += lista.Count;
+        }
+        return total;
+    }
+
+    void MostrarDebugVisual()
+    {
+        foreach (var sala in salas)
+        {
+            if (tiposSalas.ContainsKey(sala))
+            {
+                string tipo = tiposSalas[sala];
+                DungeonRoomConfig config = System.Array.Find(configuracionesSalas, c => c.nombreTipo == tipo);
+                
+                if (config != null)
+                {
+                    Vector2 centro = new Vector2(sala.x + sala.width / 2, sala.y + sala.height / 2);
+                    Vector2 tamaño = new Vector2(sala.width, sala.height);
+                    
+                    // Dibujar rectángulo del color del tipo
+                    DebugDrawRect(sala, config.colorDebug, duracionDebug);
+                    
+                    // Mostrar texto con el tipo
+                    Debug.Log($"Sala en {centro}: {tipo} ({sala.width}x{sala.height})");
+                }
+            }
+        }
+    }
+
+    void DebugDrawRect(RectInt rect, Color color, float duration)
+    {
+        Vector3 bottomLeft = new Vector3(rect.xMin, rect.yMin, 0);
+        Vector3 topLeft = new Vector3(rect.xMin, rect.yMax, 0);
+        Vector3 topRight = new Vector3(rect.xMax, rect.yMax, 0);
+        Vector3 bottomRight = new Vector3(rect.xMax, rect.yMin, 0);
+        
+        Debug.DrawLine(bottomLeft, topLeft, color, duration);
+        Debug.DrawLine(topLeft, topRight, color, duration);
+        Debug.DrawLine(topRight, bottomRight, color, duration);
+        Debug.DrawLine(bottomRight, bottomLeft, color, duration);
     }
 
     void AnalizarYPonerPared(Vector2Int pos)

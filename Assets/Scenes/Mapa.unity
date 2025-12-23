@@ -154,6 +154,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &26783180
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,6 +173,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -193,9 +196,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -203,7 +208,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &26783181
 Tilemap:
   m_ObjectHideFlags: 0
@@ -277,6 +281,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &72367075
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -295,6 +300,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -316,9 +323,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -326,7 +335,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &72367076
 Tilemap:
   m_ObjectHideFlags: 0
@@ -400,6 +408,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &76681517
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -418,6 +427,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -439,9 +450,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -449,7 +462,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &76681518
 Tilemap:
   m_ObjectHideFlags: 0
@@ -523,6 +535,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &124068816
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -541,6 +554,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -562,9 +577,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -572,7 +589,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &124068817
 Tilemap:
   m_ObjectHideFlags: 0
@@ -646,6 +662,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &189693618
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -664,6 +681,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -685,9 +704,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -695,7 +716,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &189693619
 Tilemap:
   m_ObjectHideFlags: 0
@@ -792,6 +812,7 @@ Tilemap:
     e33: 1
 --- !u!483693784 &230763003
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -810,6 +831,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -831,9 +854,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -841,7 +866,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!4 &230763004
 Transform:
   m_ObjectHideFlags: 0
@@ -923,6 +947,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &1376023522
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -941,6 +966,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -962,9 +989,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -972,7 +1001,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &1376023523
 Tilemap:
   m_ObjectHideFlags: 0
@@ -1095,6 +1123,8 @@ MonoBehaviour:
   tilemapSuelo: {fileID: 1376023523}
   tilemapParedesBase: {fileID: 2085700858}
   tilemapParedesTop: {fileID: 76681518}
+  tilemapEsquinasExtBase: {fileID: 26783181}
+  tilemapEsquinasExtTop: {fileID: 124068817}
   tileSuelo: {fileID: 11400000, guid: 4243f27b8db483b4e842f82f78ede092, type: 2}
   paredArriba: {fileID: 11400000, guid: 55d15899c5fdca745aafa7d3c9159b20, type: 2}
   paredAbajo: {fileID: 11400000, guid: a609434935fa25844a18b4998d862e6b, type: 2}
@@ -1107,11 +1137,97 @@ MonoBehaviour:
   esquinaSupIzqTop: {fileID: 11400000, guid: 521a62f1186e8d248a73e9c0bb52e4b4, type: 2}
   esquinaSupDerTop: {fileID: 11400000, guid: 63c31196ad867ca49aeb2980a4df4080, type: 2}
   paredArribaTop: {fileID: 11400000, guid: a906139a756d9ae4a91663336b3af99a, type: 2}
+  extInfIzq: {fileID: 11400000, guid: d7fd5b5d46e285b41a406a9864d02f58, type: 2}
+  extInfDer: {fileID: 11400000, guid: 5e315dbd4e6fed44291bb760955714a8, type: 2}
+  extSupIzqBase: {fileID: 11400000, guid: 8123e353f0cf10144b1c9ed18cd676fe, type: 2}
+  extSupDerBase: {fileID: 11400000, guid: 07a5b82b7fa90bc4080d9fe249d07f1a, type: 2}
+  extSupIzqTop: {fileID: 11400000, guid: 7e5524a839463c546b3cf287758b28fa, type: 2}
+  extSupDerTop: {fileID: 11400000, guid: 368d3dfdc53b9cf4d802f5e25fc46c7e, type: 2}
+  variacionesSuelo:
+  - {fileID: 11400000, guid: 946c2347d3a156c4e806cacd35fb7b4c, type: 2}
+  - {fileID: 11400000, guid: 816f7204a8a7990469291e8f832151e2, type: 2}
+  - {fileID: 11400000, guid: 7855de84e4a626b45a022889c4ddf3e9, type: 2}
+  - {fileID: 11400000, guid: 25ba11677de8d4d4fa5477984643a6a4, type: 2}
+  variacionesParedArriba:
+  - {fileID: 11400000, guid: 2638b25a0ef410248adc619206d83960, type: 2}
+  - {fileID: 11400000, guid: 9b7fa17a213e57a49a93dc175d88a45c, type: 2}
+  variacionesParedAbajo:
+  - {fileID: 11400000, guid: 6ddf6b56c0ffccd449ca0ace7a54eb13, type: 2}
+  variacionesParedIzquierda:
+  - {fileID: 11400000, guid: 3034b2325d307714ea811fdde69b1a81, type: 2}
+  - {fileID: 11400000, guid: 7b966b754b83b7744aba465ecffe650b, type: 2}
+  variacionesParedDerecha:
+  - {fileID: 11400000, guid: a35df7607d2ac6842860fbbbb1f48548, type: 2}
+  - {fileID: 11400000, guid: e514357e56c7eaf4198882977942c862, type: 2}
+  variacionesEsquinaInfIzq: []
+  variacionesEsquinaInfDer: []
+  variacionesEsquinaSupIzqBase: []
+  variacionesEsquinaSupDerBase: []
+  variacionesEsquinaSupIzqTop: []
+  variacionesEsquinaSupDerTop: []
+  variacionesParedArribaTop: []
+  variacionesExtInfIzq: []
+  variacionesExtInfDer: []
+  variacionesExtSupIzqBase: []
+  variacionesExtSupDerBase: []
+  variacionesExtSupIzqTop: []
+  variacionesExtSupDerTop: []
+  probabilidadVariacion: 0.057
   numeroSalas: 6
   anchoMinSala: 6
   altoMinSala: 6
   anchoMaxSala: 12
   altoMaxSala: 12
+  separacionMinima: 2
+  seed: 0
+  usarSeedAleatoria: 1
+  anchoPasilloMin: 1
+  anchoPasilloMax: 1
+  largoMaxPasillo: 3
+  probabilidadPasilloCurvo: 0.3
+  areaGeneracionMin: {x: -30, y: -20}
+  areaGeneracionMax: {x: 30, y: 20}
+  conectarSalaAleatoria: 1
+  densidadPasillos: 1
+  configuracionesSalas:
+  - nombreTipo: normal
+    probabilidadTipo: 0.6
+    minObjetos: 1
+    maxObjetos: 4
+    objetosPosibles: []
+    colorDebug: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    densidadObjetos: 0.3
+    objetosEnCentro: 0
+    distanciaMinimaEntreObjetos: 1.5
+  - nombreTipo: tesoro
+    probabilidadTipo: 0.15
+    minObjetos: 2
+    maxObjetos: 6
+    objetosPosibles: []
+    colorDebug: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    densidadObjetos: 0.3
+    objetosEnCentro: 1
+    distanciaMinimaEntreObjetos: 1.5
+  - nombreTipo: enemigos
+    probabilidadTipo: 0.2
+    minObjetos: 3
+    maxObjetos: 8
+    objetosPosibles: []
+    colorDebug: {r: 1, g: 0, b: 0, a: 1}
+    densidadObjetos: 0.4
+    objetosEnCentro: 0
+    distanciaMinimaEntreObjetos: 1.5
+  - nombreTipo: boss
+    probabilidadTipo: 0.05
+    minObjetos: 5
+    maxObjetos: 10
+    objetosPosibles: []
+    colorDebug: {r: 1, g: 0, b: 1, a: 1}
+    densidadObjetos: 0.3
+    objetosEnCentro: 1
+    distanciaMinimaEntreObjetos: 1.5
+  mostrarDebugVisual: 1
+  duracionDebug: 5
 --- !u!4 &1847922123
 Transform:
   m_ObjectHideFlags: 0
@@ -1162,6 +1278,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &2085700857
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1180,6 +1297,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1201,9 +1320,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1211,7 +1332,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &2085700858
 Tilemap:
   m_ObjectHideFlags: 0
