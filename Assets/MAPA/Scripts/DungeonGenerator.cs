@@ -15,6 +15,7 @@ public class GeneradorDungeon : MonoBehaviour
         [Range(0, 10)]
         public int maxObjetos = 5;             // Máximo de objetos en esta sala
         public GameObject[] objetosPosibles;   // Prefabs que pueden aparecer
+        public TileBase[] objetosTiles;        // Tiles alternativos para objetos (si se quiere usar Tilemap)
         public Color colorDebug = Color.white; // Color para debug visual
         [Range(0f, 1f)]
         public float densidadObjetos = 0.3f;   // Qué tan densos son los objetos
@@ -28,6 +29,7 @@ public class GeneradorDungeon : MonoBehaviour
     public Tilemap tilemapParedesTop;
     public Tilemap tilemapEsquinasExtBase;
     public Tilemap tilemapEsquinasExtTop;
+    public Tilemap tilemapObjetos;
 
     [Header("Tiles Base")]
     public TileBase tileSuelo;
@@ -150,6 +152,7 @@ public class GeneradorDungeon : MonoBehaviour
     private List<RectInt> salas = new List<RectInt>();
     private Dictionary<RectInt, string> tiposSalas = new Dictionary<RectInt, string>();
     private Dictionary<RectInt, List<GameObject>> objetosPorSala = new Dictionary<RectInt, List<GameObject>>();
+    private Dictionary<RectInt, List<Vector2Int>> objetosTilesPorSala = new Dictionary<RectInt, List<Vector2Int>>();
 
     void Start()
     {
@@ -178,6 +181,7 @@ public class GeneradorDungeon : MonoBehaviour
         tilemapParedesTop.ClearAllTiles();
         tilemapEsquinasExtBase.ClearAllTiles();
         tilemapEsquinasExtTop.ClearAllTiles();
+        if (tilemapObjetos != null) tilemapObjetos.ClearAllTiles();
         
         // Limpiar objetos
         foreach (var listaObjetos in objetosPorSala.Values)
@@ -192,6 +196,7 @@ public class GeneradorDungeon : MonoBehaviour
         salas.Clear();
         tiposSalas.Clear();
         objetosPorSala.Clear();
+        objetosTilesPorSala.Clear();
     }
 
     void GenerarDungeon()
@@ -263,6 +268,7 @@ public class GeneradorDungeon : MonoBehaviour
                 string tipoSala = AsignarTipoSala();
                 tiposSalas[nuevaSala] = tipoSala;
                 objetosPorSala[nuevaSala] = new List<GameObject>();
+                objetosTilesPorSala[nuevaSala] = new List<Vector2Int>();
                 
                 // Añadir suelo de la sala
                 for (int i = nuevaSala.xMin; i < nuevaSala.xMax; i++)
@@ -550,7 +556,7 @@ public class GeneradorDungeon : MonoBehaviour
                 string tipo = tiposSalas[sala];
                 DungeonRoomConfig config = System.Array.Find(configuracionesSalas, c => c.nombreTipo == tipo);
                 
-                if (config != null && config.objetosPosibles != null && config.objetosPosibles.Length > 0)
+                if (config != null && ((config.objetosPosibles != null && config.objetosPosibles.Length > 0) || (config.objetosTiles != null && config.objetosTiles.Length > 0 && tilemapObjetos != null)))
                 {
                     GenerarObjetosEnSala(sala, config);
                 }
@@ -578,23 +584,35 @@ public class GeneradorDungeon : MonoBehaviour
             
             if (posicion != Vector2Int.zero)
             {
-                // Seleccionar objeto aleatorio de los posibles
-                GameObject prefab = config.objetosPosibles[Random.Range(0, config.objetosPosibles.Length)];
-                
-                // Spawnear objeto
-                Vector3 spawnPos = new Vector3(posicion.x + 0.5f, posicion.y + 0.5f, 0);
-                GameObject nuevoObj = Instantiate(prefab, spawnPos, Quaternion.identity);
-                nuevoObj.transform.parent = this.transform;
-                
-                // Guardar en lista
-                objetosPorSala[sala].Add(nuevoObj);
-                posicionesUsadas.Add(posicion);
-                objetosGenerados++;
-                
-                // Aplicar rotación aleatoria si es decorativo
-                if (prefab.CompareTag("Decoracion"))
+                // Si hay tiles configurados para objetos y hay Tilemap asignado, colocar tile en vez de instanciar prefab
+                if (config.objetosTiles != null && config.objetosTiles.Length > 0 && tilemapObjetos != null)
                 {
-                    nuevoObj.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 4) * 90);
+                    TileBase tile = config.objetosTiles[Random.Range(0, config.objetosTiles.Length)];
+                    tilemapObjetos.SetTile((Vector3Int)posicion, tile);
+                    objetosTilesPorSala[sala].Add(posicion);
+                    posicionesUsadas.Add(posicion);
+                    objetosGenerados++;
+                }
+                else if (config.objetosPosibles != null && config.objetosPosibles.Length > 0)
+                {
+                    // Seleccionar objeto aleatorio de los posibles
+                    GameObject prefab = config.objetosPosibles[Random.Range(0, config.objetosPosibles.Length)];
+                    
+                    // Spawnear objeto
+                    Vector3 spawnPos = new Vector3(posicion.x + 0.5f, posicion.y + 0.5f, 0);
+                    GameObject nuevoObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+                    nuevoObj.transform.parent = this.transform;
+                    
+                    // Guardar en lista
+                    objetosPorSala[sala].Add(nuevoObj);
+                    posicionesUsadas.Add(posicion);
+                    objetosGenerados++;
+                    
+                    // Aplicar rotación aleatoria si es decorativo
+                    if (prefab.CompareTag("Decoracion"))
+                    {
+                        nuevoObj.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 4) * 90);
+                    }
                 }
             }
         }
@@ -688,13 +706,16 @@ public class GeneradorDungeon : MonoBehaviour
             Debug.Log($"{kvp.Key}: {kvp.Value} salas");
         }
         
-        // Mostrar objetos por tipo
+        // Mostrar objetos por tipo (prefabs + tiles)
         Debug.Log("=== OBJETOS POR TIPO DE SALA ===");
         foreach (var sala in salas)
         {
-            if (tiposSalas.ContainsKey(sala) && objetosPorSala.ContainsKey(sala))
+            if (tiposSalas.ContainsKey(sala))
             {
-                Debug.Log($"Sala {sala} ({tiposSalas[sala]}): {objetosPorSala[sala].Count} objetos");
+                int cuentaPrefabs = objetosPorSala.ContainsKey(sala) ? objetosPorSala[sala].Count : 0;
+                int cuentaTiles = objetosTilesPorSala.ContainsKey(sala) ? objetosTilesPorSala[sala].Count : 0;
+                int totalSala = cuentaPrefabs + cuentaTiles;
+                Debug.Log($"Sala {sala} ({tiposSalas[sala]}): {totalSala} objetos ({cuentaPrefabs} prefabs, {cuentaTiles} tiles)");
             }
         }
     }
@@ -705,6 +726,10 @@ public class GeneradorDungeon : MonoBehaviour
         foreach (var lista in objetosPorSala.Values)
         {
             total += lista.Count;
+        }
+        foreach (var listaTiles in objetosTilesPorSala.Values)
+        {
+            total += listaTiles.Count;
         }
         return total;
     }
